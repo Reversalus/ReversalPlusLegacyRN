@@ -1,34 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-
-const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
-    useEffect(() => {
-        // Simulate a loading process
-        const timeout = setTimeout(() => {
-            onFinish(); // Notify parent to switch from the splash screen
-        }, 3000); // Duration of splash screen (3 seconds)
-
-        return () => clearTimeout(timeout);
-    }, [onFinish]);
-
-    return (
-        <View style={styles.splashContainer}>
-            <Image
-                source={require('./src/assets/reversal_logo.png')} // Corrected image reference
-                style={styles.splashImage}
-            />
-            <Text style={styles.splashText}>My App</Text>
-        </View>
-    );
-};
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 const App = () => {
-    const [isSplashVisible, setIsSplashVisible] = useState(true);
-
-    if (isSplashVisible) {
-        return <SplashScreen onFinish={() => setIsSplashVisible(false)} />;
-    }
-
     return (
         <View style={styles.mainContainer}>
             <Text>Welcome to My App!</Text>
