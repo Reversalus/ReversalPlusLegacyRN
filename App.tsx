@@ -1,91 +1,115 @@
 /**
- * App.tsx
+ * @file App.tsx
  *
- * The main entry point for the application. This file initializes the navigation container,
- * configures deep linking, and sets up the screens and navigation utilities.
+ * This is the main entry point of the application, responsible for setting up navigation
+ * across different screens and handling deep links for both React Native (Android/iOS)
+ * and React Native Web. This file integrates the navigation configuration and manages
+ * the initial deep link navigation process.
  *
  * Key Features:
- * - Configures deep linking for both React Native Web and mobile platforms.
- * - Uses `NavigationUtils` to handle deep link navigation.
- * - Defines the stack navigator and manages screen transitions.
+ * - Sets up React Navigation with a stack navigator and deep link support.
+ * - Handles deep link navigation via `Linking` for mobile platforms and browser history
+ *   on the web.
+ * - Clears browser history on initial load to prevent stale or incorrect navigation history.
+ * - Listens to changes in the browser's back/forward buttons and adjusts screen navigation accordingly.
  *
- * Usage:
- * - Place your app screens inside the `Stack.Navigator`.
- * - Add additional deep linking prefixes or screens in the `linking` configuration as needed.
+ * Dependencies:
+ * - React Navigation: for managing screen navigation.
+ * - `Linking`: React Native's API to handle deep links.
+ * - `Platform`: React Native's API to detect platform-specific behavior (iOS, Android, Web).
+ *
+ * Screens:
+ * - IntroScreen
+ * - LoginScreen
+ * - MainLanding (Dashboard)
+ *
+ * @author [Your Name]
+ * @version 1.0.0
  */
-
-/**
- * App.tsx
- * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
- * Uses NavigationUtils for deep link parsing and navigation handling.
- */
-
-
-/**
- * App.tsx
- * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
- * Uses NavigationUtils for deep link parsing and navigation handling.
- */
-/**
- * App.tsx
- * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
- * Uses NavigationUtils for deep link parsing and navigation handling.
- */
-
-/**
- * App.tsx
- * Entry point for the application.
- * Configures navigation, deep linking, and initializes navigation utilities.
- */
-
-/**
- * App.tsx
- * Entry point of the application.
- * Configures navigation, deep linking, and initializes navigation utilities.
- */
-
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Linking, Platform } from 'react-native';
 import { setNavigationRef, handleDeepLinkNavigation } from './src/Utils/NavigationUtils';
 import IntroScreen from './src/Screens/IntroScreen';
 import LoginScreen from './src/Screens/LoginScreen';
-import MainLanding from './src/Screens/MainLanding';
+import DashboardScreen from './src/Screens/DashboardScreen';
+import MainLanding from "./src/Screens/MainLanding";
 
+// Create a Stack Navigator to manage the app's screens.
 const Stack = createStackNavigator();
 
+// Linking configuration to handle deep links for both mobile and web
+const linkingConfig = {
+    prefixes: ['reversalplus://', 'http://localhost:8080'],
+    config: {
+        screens: {
+            Intro: 'intro',
+            Login: 'login',
+            Dashboard: 'dashboard',
+        },
+    },
+};
+
+/**
+ * App component serves as the main entry point for the application.
+ * It sets up navigation, handles deep link routing, and listens to browser history events.
+ */
 const App = () => {
-    const navigationRef = useRef(null);
+    const navigationRef = useRef<any>(null);
 
     useEffect(() => {
-        // Set navigation ref globally
-        setNavigationRef(navigationRef);
+        // Set the navigation reference for deep link handling
+        setNavigationRef(navigationRef.current);
 
-        const handleInitialURL = async () => {
+        // Clear browser history on first load to avoid stale history states in web
+        if (Platform.OS === 'web') {
+            window.history.replaceState({}, ''); // Replaces the current history entry
+        }
+
+        // Handle the initial deep link (either from a mobile deep link or the browser)
+        const handleInitialDeepLink = async () => {
             const url = Platform.OS === 'web' ? window.location.href : await Linking.getInitialURL();
             if (url) {
-                handleDeepLinkNavigation(url); // Handle deep link navigation
+                handleDeepLinkNavigation.navigate(url);
             }
         };
 
-        handleInitialURL();
+        // Handle the initial deep link (i.e., when the app is launched directly from a link)
+        handleInitialDeepLink();
 
-        const subscription = Linking.addEventListener('url', (event) => {
-            handleDeepLinkNavigation(event.url);
+        // Set up a listener for deep link events when the URL changes (back/forward navigation in web)
+        const listener = Linking.addEventListener('url', (event) => {
+            if (event.url) {
+                handleDeepLinkNavigation.navigate(event.url);
+            }
         });
 
+        // Handle browser back/forward navigation (Web only)
+        const handlePopState = (event: PopStateEvent) => {
+            if (event.state) {
+                const { url } = event.state;
+                handleDeepLinkNavigation.navigate(url);  // Navigate based on the current history state
+            }
+        };
+
+        // Add popstate listener to detect browser back/forward events
+        if(Platform.OS == "web"){
+            window.addEventListener('popstate', handlePopState);
+        }
+
         return () => {
-            subscription.remove();
+            listener.remove();
+            window.removeEventListener('popstate', handlePopState);
         };
     }, []);
 
     return (
-        <NavigationContainer ref={navigationRef}>
-            <Stack.Navigator initialRouteName="Intro" screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="Intro" component={IntroScreen} />
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="Dashboard" component={MainLanding} />
+        <NavigationContainer ref={navigationRef} linking={linkingConfig}>
+            <Stack.Navigator initialRouteName="intro" screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="intro" component={IntroScreen} />
+                <Stack.Screen name="login" component={LoginScreen} />
+                <Stack.Screen name="dashboard" component={MainLanding} />
             </Stack.Navigator>
         </NavigationContainer>
     );

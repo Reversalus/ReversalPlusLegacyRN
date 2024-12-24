@@ -1,24 +1,27 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
-import {handleDeepLinkNavigation} from '../Utils/NavigationUtils.ts';
-import {DeepLinks} from "../Constants/Deeplinks.ts";
+import { View, Text, Button } from 'react-native';
+import { handleDeepLinkNavigation } from '../Utils/NavigationUtils';
 
-const IntroScreen = ({ navigation }: { navigation: any }) => {
-
+const IntroScreen = () => {
     const navigateToLogin = () => {
-        handleDeepLinkNavigation.push(`${DeepLinks.LOGIN}&Params={'key1':'value1','key2':'value2'}`);
+        handleDeepLinkNavigation.navigate(
+            'reversalplus://ScreenName=login'
+        );
+    };
+
+    const navigateToDashboard = () => {
+        handleDeepLinkNavigation.replace(
+            'reversalplus://ScreenName=dashboard&Params={"userId":123}'
+        );
     };
 
     return (
-        <View style={styles.container}>
-            <Text>Welcome to the Intro Screen!</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>Intro Screen</Text>
             <Button title="Go to Login" onPress={navigateToLogin} />
+            <Button title="Go to Dashboard" onPress={navigateToDashboard} />
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-});
 
 export default IntroScreen;
