@@ -1,61 +1,5 @@
-/**
- * NavigationUtils.ts
- *
- * This file provides utility functions for handling navigation and deep linking within the app.
- * It includes functionality for parsing deep links, managing navigation across web and mobile platforms,
- * and handling navigation parameters.
- *
- * Key Features:
- * - Parses deep link URLs to extract screen names and parameters.
- * - Handles navigation for both React Native Web and mobile platforms.
- * - Provides centralized navigation logic to simplify screen-level navigation calls.
- * - Allows passing explicit parameters during navigation.
- *
- * Functions:
- * 1. `setNavigationRef`: Sets a reference to the navigation container for global access.
- * 2. `handleDeepLinkNavigation`: Handles deep link navigation by parsing the URL and navigating to the correct screen.
- * 3. `parseDeepLink`: Parses a deep link URL to extract the screen name and parameters.
- * 4. `handleWebDeepLink`: Handles deep link navigation specifically for React Native Web.
- *
- * Usage:
- * - Set the navigation reference in `App.tsx` using `setNavigationRef`.
- * - Use `handleDeepLinkNavigation` to navigate to screens with deep links and optional parameters.
- * - For React Native Web, call `handleWebDeepLink` to handle browser-based deep links.
- */
 
-
-/**
- * NavigationUtils.ts
- * Contains utility functions for handling navigation and deep linking.
- * Includes logic for parsing deep links, navigating to screens, and supporting both web and mobile platforms.
- */
-
-
-/**
- * NavigationUtils.ts
- * Contains utility functions for handling navigation and deep linking.
- * Includes logic for parsing deep links, navigating to screens, and supporting both web and mobile platforms.
- */
-
-/**
- * NavigationUtils.ts
- * Contains utility functions for handling navigation and deep linking.
- * Includes logic for parsing deep links, navigating to screens, and supporting both web and mobile platforms.
- */
-
-/**
- * NavigationUtils.ts
- * Handles global navigation and deep linking logic.
- * Includes support for both mobile and web platforms.
- */
-
-/**
- * NavigationUtils.ts
- * Handles global navigation and deep linking logic for both web and mobile.
- * Provides functions for parsing deep links and navigating screens with parameters.
- */
-
-import { CommonActions, NavigationContainerRef } from '@react-navigation/native';
+import { CommonActions, StackActions, NavigationContainerRef } from '@react-navigation/native';
 
 // Global navigation reference
 let navigationRef: NavigationContainerRef<any> | null = null;
@@ -80,37 +24,6 @@ export const getNavigationRef = (): NavigationContainerRef<any> | null => {
 };
 
 /**
- * Handles navigation using a deep link.
- * Parses the URL and navigates to the corresponding screen with parameters.
- * @param url - The deep link URL.
- */
-export const handleDeepLinkNavigation = (url: string) => {
-    const navigation = getNavigationRef();
-    if (!navigation) {
-        console.error('Navigation reference is not available for deep link handling.');
-        return;
-    }
-
-    const parsedData = parseDeepLink(url);
-    if (parsedData) {
-        const { screen, params } = parsedData;
-
-        if (screen) {
-            navigation.dispatch(
-                CommonActions.navigate({
-                    name: screen,
-                    params,
-                })
-            );
-        } else {
-            console.error('Screen name is missing or undefined in the deep link:', url);
-        }
-    } else {
-        console.error('Invalid deep link:', url);
-    }
-};
-
-/**
  * Parses a deep link URL into screen name and parameters.
  * @param url - The deep link URL.
  * @returns An object with screen name and parameters.
@@ -132,4 +45,66 @@ export const parseDeepLink = (url: string) => {
         console.error('Error parsing deep link:', error);
         return null;
     }
+};
+
+/**
+ * Handles navigation actions like push and replace using deep links.
+ */
+export const handleDeepLinkNavigation = {
+    /**
+     * Pushes a new screen onto the navigation stack using a deep link.
+     * @param url - The deep link URL.
+     */
+    push: (url: string) => {
+        const navigation = getNavigationRef();
+        if (!navigation) {
+            console.error('Navigation reference is not available for deep link handling.');
+            return;
+        }
+
+        const parsedData = parseDeepLink(url);
+        if (parsedData) {
+            const { screen, params } = parsedData;
+
+            if (screen) {
+                navigation.dispatch(
+                    CommonActions.navigate({
+                        name: screen,
+                        params,
+                    })
+                );
+            } else {
+                console.error('Screen name is missing or undefined in the deep link:', url);
+            }
+        } else {
+            console.error('Invalid deep link:', url);
+        }
+    },
+
+    /**
+     * Replaces the current screen with a new one using a deep link.
+     * @param url - The deep link URL.
+     */
+    replace: (url: string) => {
+        const navigation = getNavigationRef();
+        if (!navigation) {
+            console.error('Navigation reference is not available for deep link handling.');
+            return;
+        }
+
+        const parsedData = parseDeepLink(url);
+        if (parsedData) {
+            const { screen, params } = parsedData;
+
+            if (screen) {
+                navigation.dispatch(
+                    StackActions.replace(screen, params)
+                );
+            } else {
+                console.error('Screen name is missing or undefined in the deep link:', url);
+            }
+        } else {
+            console.error('Invalid deep link:', url);
+        }
+    },
 };

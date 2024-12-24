@@ -6,7 +6,7 @@ import {DeepLinks} from "../Constants/Deeplinks.ts";
 const IntroScreen = ({ navigation }: { navigation: any }) => {
 
     const navigateToLogin = () => {
-        handleDeepLinkNavigation(`${DeepLinks.LOGIN}&Params={'key1':'value1','key2':'value2'}`);
+        handleDeepLinkNavigation.push(`${DeepLinks.LOGIN}&Params={'key1':'value1','key2':'value2'}`);
     };
 
     return (

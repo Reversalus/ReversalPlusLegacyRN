@@ -1,16 +1,17 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { navigateToScreen } from '../Utils/NavigationUtils.ts';
+import { handleDeepLinkNavigation } from '../Utils/NavigationUtils.ts';
+import {DeepLinks} from "../Constants/Deeplinks.ts";
 
 const MainLanding = ({ navigation }: { navigation: any }) => {
     const handleGoToDashboard = () => {
         // Navigate to DashboardScreen using its deep link
-        navigateToScreen(navigation, 'Dashboard');
+        handleDeepLinkNavigation.replace(DeepLinks.INTRO);
     };
 
     return (
         <View style={styles.container}>
-            <Text>Login Screen</Text>
+            <Text>Dashboard Screen</Text>
             <Button title="Go to Dashboard" onPress={handleGoToDashboard} />
         </View>
     );

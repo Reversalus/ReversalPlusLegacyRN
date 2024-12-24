@@ -6,7 +6,7 @@ import {DeepLinks} from "../Constants/Deeplinks.ts";
 const LoginScreen = ({ navigation }: { navigation: any }) => {
     const handleGoToDashboard = () => {
         // Navigate to DashboardScreen using its deep link
-        handleDeepLinkNavigation(DeepLinks.LOGIN);
+            handleDeepLinkNavigation.push(DeepLinks.DASHBOARD);
     };
 
     return (
