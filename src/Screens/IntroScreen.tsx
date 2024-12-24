@@ -1,17 +1,18 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { navigateToScreen } from '../Utils/NavigationUtils';
+import {handleDeepLinkNavigation} from '../Utils/NavigationUtils.ts';
+import {DeepLinks} from "../Constants/Deeplinks.ts";
 
 const IntroScreen = ({ navigation }: { navigation: any }) => {
-    const handleGoToLogin = () => {
-        // Navigate to LoginScreen using its deep link
-        navigateToScreen(navigation, 'Login');
+
+    const navigateToLogin = () => {
+        handleDeepLinkNavigation(`${DeepLinks.LOGIN}&Params={'key1':'value1','key2':'value2'}`);
     };
 
     return (
         <View style={styles.container}>
             <Text>Welcome to the Intro Screen!</Text>
-            <Button title="Go to Login" onPress={handleGoToLogin} />
+            <Button title="Go to Login" onPress={navigateToLogin} />
         </View>
     );
 };

@@ -1,8 +1,54 @@
-import React, { useRef, useEffect } from 'react';
+/**
+ * App.tsx
+ *
+ * The main entry point for the application. This file initializes the navigation container,
+ * configures deep linking, and sets up the screens and navigation utilities.
+ *
+ * Key Features:
+ * - Configures deep linking for both React Native Web and mobile platforms.
+ * - Uses `NavigationUtils` to handle deep link navigation.
+ * - Defines the stack navigator and manages screen transitions.
+ *
+ * Usage:
+ * - Place your app screens inside the `Stack.Navigator`.
+ * - Add additional deep linking prefixes or screens in the `linking` configuration as needed.
+ */
+
+/**
+ * App.tsx
+ * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
+ * Uses NavigationUtils for deep link parsing and navigation handling.
+ */
+
+
+/**
+ * App.tsx
+ * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
+ * Uses NavigationUtils for deep link parsing and navigation handling.
+ */
+/**
+ * App.tsx
+ * Entry point of the application. Configures navigation, deep linking, and handles both web and mobile platforms.
+ * Uses NavigationUtils for deep link parsing and navigation handling.
+ */
+
+/**
+ * App.tsx
+ * Entry point for the application.
+ * Configures navigation, deep linking, and initializes navigation utilities.
+ */
+
+/**
+ * App.tsx
+ * Entry point of the application.
+ * Configures navigation, deep linking, and initializes navigation utilities.
+ */
+
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Linking } from 'react-native';
-import { handleDeepLink } from './src/Utils/NavigationUtils'; // Import deep link handler
+import { Linking, Platform } from 'react-native';
+import { setNavigationRef, handleDeepLinkNavigation } from './src/Utils/NavigationUtils';
 import IntroScreen from './src/Screens/IntroScreen';
 import LoginScreen from './src/Screens/LoginScreen';
 import MainLanding from './src/Screens/MainLanding';
@@ -10,53 +56,32 @@ import MainLanding from './src/Screens/MainLanding';
 const Stack = createStackNavigator();
 
 const App = () => {
-    // Create a ref to hold the navigation container
     const navigationRef = useRef(null);
 
     useEffect(() => {
-        // On app launch, check for the initial deep link
-        const getInitialURL = async () => {
-            const url = await Linking.getInitialURL();
+        // Set navigation ref globally
+        setNavigationRef(navigationRef);
+
+        const handleInitialURL = async () => {
+            const url = Platform.OS === 'web' ? window.location.href : await Linking.getInitialURL();
             if (url) {
-                handleDeepLink(url, navigationRef.current);
+                handleDeepLinkNavigation(url); // Handle deep link navigation
             }
         };
 
-        getInitialURL();
+        handleInitialURL();
 
-        // Listen for deep links while the app is running
-        const handleLink = (event: any) => {
-            const { url } = event;
-            handleDeepLink(url, navigationRef.current);
-        };
-
-        Linking.addEventListener('url', handleLink);
-
-        // No need to remove the event listener, as React Native manages it internally.
-        // So, we can leave the cleanup empty for now if it's unnecessary.
+        const subscription = Linking.addEventListener('url', (event) => {
+            handleDeepLinkNavigation(event.url);
+        });
 
         return () => {
-            // No need to remove the event listener for deep links explicitly.
+            subscription.remove();
         };
     }, []);
 
-    // Set up deep linking configuration
-    const linking = {
-        prefixes: ['reversalplus://', 'https://reversalplus.com'],
-        config: {
-            screens: {
-                Intro: 'intro',
-                Login: 'login',
-                Dashboard: 'dashboard',
-            },
-        },
-    };
-
     return (
-        <NavigationContainer
-            ref={navigationRef} // Reference the navigation container
-            linking={linking}
-        >
+        <NavigationContainer ref={navigationRef}>
             <Stack.Navigator initialRouteName="Intro" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Intro" component={IntroScreen} />
                 <Stack.Screen name="Login" component={LoginScreen} />

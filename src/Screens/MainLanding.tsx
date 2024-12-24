@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { navigateToScreen } from '../Utils/NavigationUtils';
+import { navigateToScreen } from '../Utils/NavigationUtils.ts';
 
 const MainLanding = ({ navigation }: { navigation: any }) => {
     const handleGoToDashboard = () => {
