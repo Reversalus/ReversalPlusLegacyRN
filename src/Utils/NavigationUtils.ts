@@ -123,7 +123,7 @@ const navigateToScreen = (url: string, params?: any, method: 'push' | 'replace' 
         }
     }
 
-    // Handle the actual navigation in React Navigation
+    // Navigate based on method
     if (method === 'push' || method === 'navigate') {
         navigationRef.navigate(screenName, finalParams);
     } else if (method === 'replace') {
@@ -134,7 +134,7 @@ const navigateToScreen = (url: string, params?: any, method: 'push' | 'replace' 
     }
 };
 
-// Exposed API for deep link navigation with methods: push, replace, navigate
+// Exposed API for deep link navigation
 const handleDeepLinkNavigation = {
     push: (url: string, params?: any) => navigateToScreen(url, params, 'push'),
     replace: (url: string, params?: any) => navigateToScreen(url, params, 'replace'),

@@ -26,14 +26,14 @@
  * @author [Your Name]
  * @version 1.0.0
  */
-import React, { useRef, useEffect } from 'react';
+
+import React, { useRef, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Linking, Platform } from 'react-native';
 import { setNavigationRef, handleDeepLinkNavigation } from './src/Utils/NavigationUtils';
 import IntroScreen from './src/Screens/IntroScreen';
 import LoginScreen from './src/Screens/LoginScreen';
-import DashboardScreen from './src/Screens/DashboardScreen';
 import MainLanding from "./src/Screens/MainLanding";
 
 // Create a Stack Navigator to manage the app's screens.
@@ -57,6 +57,7 @@ const linkingConfig = {
  */
 const App = () => {
     const navigationRef = useRef<any>(null);
+    const [isNavigationReady, setIsNavigationReady] = useState(false);  // New state to track navigation readiness
 
     useEffect(() => {
         // Set the navigation reference for deep link handling
@@ -70,7 +71,7 @@ const App = () => {
         // Handle the initial deep link (either from a mobile deep link or the browser)
         const handleInitialDeepLink = async () => {
             const url = Platform.OS === 'web' ? window.location.href : await Linking.getInitialURL();
-            if (url) {
+            if (url && isNavigationReady) {
                 handleDeepLinkNavigation.navigate(url);
             }
         };
@@ -80,32 +81,42 @@ const App = () => {
 
         // Set up a listener for deep link events when the URL changes (back/forward navigation in web)
         const listener = Linking.addEventListener('url', (event) => {
-            if (event.url) {
+            if (event.url && isNavigationReady) {
                 handleDeepLinkNavigation.navigate(event.url);
             }
         });
 
-        // Handle browser back/forward navigation (Web only)
-        const handlePopState = (event: PopStateEvent) => {
-            if (event.state) {
-                const { url } = event.state;
-                handleDeepLinkNavigation.navigate(url);  // Navigate based on the current history state
-            }
-        };
-
-        // Add popstate listener to detect browser back/forward events
-        if(Platform.OS == "web"){
+        // Handle browser back/forward navigation for Web (only for web)
+        if (Platform.OS === 'web') {
+            const handlePopState = (event: PopStateEvent) => {
+                if (event.state && isNavigationReady) {
+                    const { url } = event.state;
+                    handleDeepLinkNavigation.navigate(url);  // Navigate based on the current history state
+                }
+            };
             window.addEventListener('popstate', handlePopState);
-        }
 
-        return () => {
-            listener.remove();
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, []);
+            return () => {
+                window.removeEventListener('popstate', handlePopState);
+                listener.remove();
+            };
+        } else {
+            return () => {
+                listener.remove();
+            };
+        }
+    }, [isNavigationReady]);
+
+    function onNavigationReady() {
+        setIsNavigationReady(true);
+    }
 
     return (
-        <NavigationContainer ref={navigationRef} linking={linkingConfig}>
+        <NavigationContainer
+            ref={navigationRef}
+            linking={linkingConfig}
+            onReady={onNavigationReady} // Mark navigation as ready when the container is ready
+        >
             <Stack.Navigator initialRouteName="intro" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="intro" component={IntroScreen} />
                 <Stack.Screen name="login" component={LoginScreen} />
