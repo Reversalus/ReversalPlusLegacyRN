@@ -17,7 +17,7 @@
  */
 
 export const DeepLinks = {
-    INTRO: 'reversalplus://ScreenName=Intro',
-    LOGIN: 'reversalplus://ScreenName=Login',
-    DASHBOARD: 'reversalplus://ScreenName=Dashboard',
+    INTRO: 'reversalplus://ScreenName=intro',
+    LOGIN: 'reversalplus://ScreenName=login',
+    DASHBOARD: 'reversalplus://ScreenName=dashboard',
 };
