@@ -92,4 +92,7 @@ module.exports = {
             __DEV__: JSON.stringify(true),
         }),
     ],
+    devServer: {
+        historyApiFallback: true,
+    }
 };
