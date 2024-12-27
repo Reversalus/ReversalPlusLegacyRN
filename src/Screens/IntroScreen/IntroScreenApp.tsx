@@ -9,6 +9,7 @@ import {
 import Swiper from 'react-native-swiper';
 import {handleDeepLinkNavigation} from "../../Utils/NavigationUtils.ts";
 import {DeepLinks} from "../../Constants/Deeplinks.ts";
+import {Button} from "native-base"
 
 const { width } = Dimensions.get('window');
 
@@ -31,15 +32,8 @@ const IntroScreenApp = () => {
 
     const renderPagination = () => (
         <View style={styles.pagination}>
-            <TouchableOpacity
-                disabled={activePage === 0}
-                onPress={() => setActivePage(Math.max(activePage - 1, 0))}
-                style={[styles.button, activePage === 0 && styles.disabledButton]}
-            >
-                <Text style={[styles.buttonText, activePage === 0 && styles.disabledText]}>
-                    Previous
-                </Text>
-            </TouchableOpacity>
+            <Button
+                onPress={() => setActivePage(Math.max(activePage - 1, 0))}>Previous</Button>
             {activePage === pages.length - 1 ? (
                 <TouchableOpacity onPress={onGetStarted} style={styles.button}>
                     <Text style={styles.buttonText}>Get Started</Text>
