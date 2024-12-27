@@ -35,7 +35,6 @@ import { setNavigationRef, handleDeepLinkNavigation } from './src/Utils/Navigati
 import IntroScreen from './src/Screens/IntroScreen';
 import LoginScreen from './src/Screens/LoginScreen';
 import MainLanding from "./src/Screens/MainLanding";
-import { NativeBaseProvider } from 'native-base';
 
 // Create a Stack Navigator to manage the app's screens.
 const Stack = createStackNavigator();
@@ -92,7 +91,7 @@ const App = () => {
             const handlePopState = (event: PopStateEvent) => {
                 if (event.state && isNavigationReady) {
                     const { url } = event.state;
-                    handleDeepLinkNavigation.navigate(url);  // Navigate based on the current history state
+                    handleDeepLinkNavigation.push(url);  // Navigate based on the current history state
                 }
             };
             window.addEventListener('popstate', handlePopState);
@@ -113,7 +112,6 @@ const App = () => {
     }
 
     return (
-        <NativeBaseProvider>
         <NavigationContainer
             ref={navigationRef}
             linking={linkingConfig}
@@ -125,7 +123,6 @@ const App = () => {
                 <Stack.Screen name="dashboard" component={MainLanding} />
             </Stack.Navigator>
         </NavigationContainer>
-        </NativeBaseProvider>
     );
 };
 
