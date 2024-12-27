@@ -4,18 +4,17 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const appDirectory = path.resolve(__dirname);
 const { presets, plugins } = require(`${appDirectory}/babel.config.js`);
 const compileNodeModules = [
-    // Add every react-native package that needs compiling
-    // 'react-native-gesture-handler',
+    "react-native-swiper", // Include react-native-swiper
 ].map((moduleName) => path.resolve(appDirectory, `node_modules/${moduleName}`));
 
 const babelLoaderConfiguration = {
-    test: /\.(js|jsx|ts|tsx)$/, // Updated to include .jsx
+    test: /\.(js|jsx|ts|tsx)$/,
     include: [
         path.resolve(__dirname, "index.web.js"),
         path.resolve(__dirname, "App.tsx"),
         path.resolve(__dirname, "src"),
         path.resolve(__dirname, "component"),
-        ...compileNodeModules,
+        ...compileNodeModules, // Ensure react-native-swiper is transpiled
     ],
     use: {
         loader: "babel-loader",
@@ -50,7 +49,7 @@ const tsLoaderConfiguration = {
     test: /\.(ts)x?$/,
     exclude: /node_modules|\.d\.ts$/,
     use: {
-        loader: 'ts-loader',
+        loader: "ts-loader",
         options: {
             transpileOnly: true, // Avoid emitting files
             compilerOptions: {
@@ -80,7 +79,7 @@ module.exports = {
             babelLoaderConfiguration,
             imageLoaderConfiguration,
             svgLoaderConfiguration,
-            tsLoaderConfiguration, // Make sure ts-loader is added here
+            tsLoaderConfiguration, // Ensure ts-loader is added
         ],
     },
     plugins: [
@@ -94,5 +93,5 @@ module.exports = {
     ],
     devServer: {
         historyApiFallback: true,
-    }
+    },
 };
