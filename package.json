@@ -11,6 +11,7 @@
     "web": "webpack serve --mode=development --config webpack.config.js"
   },
   "dependencies": {
+    "cocoapods": "^0.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.76.5",
@@ -20,6 +21,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "latest",
     "@react-native/babel-preset": "0.76.5",
     "@react-native/eslint-config": "0.76.5",
     "@react-native/metro-config": "0.76.5",
@@ -39,8 +41,7 @@
     "url-loader": "^4.1.1",
     "webpack": "^5.97.1",
     "webpack-cli": "^5.1.0",
-    "webpack-dev-server": "^4.15.0",
-    "@react-native-community/cli": "latest"
+    "webpack-dev-server": "^4.15.0"
   },
   "engines": {
     "node": ">=18"
