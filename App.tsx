@@ -35,6 +35,7 @@ import { setNavigationRef, handleDeepLinkNavigation } from './src/Utils/Navigati
 import IntroScreen from './src/Screens/IntroScreen';
 import LoginScreen from './src/Screens/LoginScreen';
 import MainLanding from "./src/Screens/MainLanding";
+import { NativeBaseProvider } from 'native-base';
 
 // Create a Stack Navigator to manage the app's screens.
 const Stack = createStackNavigator();
@@ -112,6 +113,7 @@ const App = () => {
     }
 
     return (
+        <NativeBaseProvider>
         <NavigationContainer
             ref={navigationRef}
             linking={linkingConfig}
@@ -123,6 +125,7 @@ const App = () => {
                 <Stack.Screen name="dashboard" component={MainLanding} />
             </Stack.Navigator>
         </NavigationContainer>
+        </NativeBaseProvider>
     );
 };
 
